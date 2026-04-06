@@ -40,160 +40,167 @@
 
   <!-- Template Main CSS File -->  
   <link href="assets/css/style_dashboard.css" rel="stylesheet"> 
+  <!-- <link href="assets/css/style.css" rel="stylesheet">  -->
 </head>
 
 <body onLoad="setInterval('displayServerTime()', 1000);">
 
   <!-- ======= Header ======= -->
-  <!-- <header id="header" class="header fixed-top d-flex align-items-center">
-    <div class="d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
-        <img src="assets/img/logopermata.png" alt="">
-        <span class="d-none d-lg-block"><?=$company["companyname"]?></span>
-        <span class="d-none d-lg-block">Jam Operasional : Senin - Jum'at ( 8AM - 7PM) | Sabtu - Minggu ( 10AM - 7PM)</span>
-      </a>      
-    </div>
-    <nav class="header-right ms-auto">
-      
-    </nav>
-  </header> -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+    <nav class="header-nav ms-auto">
+      <span style="text-align:right;font-weight:bold;font-name:arial-black;color:#000;margin-right:25px;">
+          <?php
+              function dayList(){
+                $date = date('Y-m-d');
+                $day = date('D', strtotime($date));
+                $hari = array(
+                      'Sun' => 'Minggu',
+                    'Mon' => 'Senin',
+                    'Tue' => 'Selasa',
+                    'Wed' => 'Rabu',
+                    'Thu' => 'Kamis',
+                    'Fri' => 'Jumat',
+                    'Sat' => 'Sabtu'
+                );
+                return $hari[$day];
+            }
+            echo dayList(). ', ' . date('d F Y');
+          ?>  
+          - <span id="clock" style="font-weight:bold;font-name:arial-black;color:black;"><?php print date('H:i:s');?></span>
+        </span>
+    </nav><!-- End Icons Navigation -->
+  </header>
   <!-- End Header --> 
 
   <main id="main" class="main">
-    
-    <section class="section">
-      <div class="row">
-
-        <!-- Left side columns -->
-        <div class="col-lg-8">
-          <div class="row">
-            <div class="col-mb-12">
-              <div class="card">
-                <!-- <div class="card-body"> -->
-                  <video controls id="myVideo" autoplay muted loop>
-                    <source src="video.mp4" type="video/mp4"/>
-                  </video>
-                <!-- </div> -->
-              </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="card">
+          <video controls id="myVideo" autoplay muted loop>
+            <source src="video.mp4" type="video/mp4"/>
+          </video>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card">
+          <div class="card-body">
+            <div class="col-lg-3">
+              <table id="main-table1" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                  <tr>                    
+                    <th style="text-align:center;">#</th>
+                    <th>Curr</th>
+                    <th>We Buy</th>
+                    <th>We Sale</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php		
+                      $txt_file = file_get_contents('file/currency.txt');
+                      $rows     = explode("\n", $txt_file);
+                      array_shift($rows);
+                      
+                      $no = 1;
+                      foreach($rows as $row => $data) {
+                        $row_data = explode('^', $data);                    
+                        $info[$row]['CURRENCY'] = $row_data[0];
+                        $info[$row]['BUY']      = $row_data[1];
+                        $info[$row]['SALE']     = $row_data[2];
+                        if($no <= 5){
+                    ?>    
+                          <tr>
+                            <td style="text-align:center;"><?=$no?></td>
+                            <td><?=$info[$row]['CURRENCY']?></td>  
+                            <td style="color:blue;"><?=$info[$row]['BUY']?></td> 
+                            <td style="color:red;"><?= $info[$row]['SALE']?></td>
+                        </tr>
+                    <?php
+                          $no++;
+                        }
+                      }
+                      fclose($txt_file);
+                    ?>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-lg-3">
+              <table id="main-table1" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                  <tr>                    
+                    <th style="text-align:center;">#</th>
+                    <th>Curr</th>
+                    <th>We Buy</th>
+                    <th>We Sale</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php		
+                      $txt_file = file_get_contents('file/currency.txt');
+                      $rows     = explode("\n", $txt_file);
+                      array_shift($rows);
+                      
+                      $no = 1;
+                      foreach($rows as $row => $data) {
+                        $row_data = explode('^', $data);                    
+                        $info[$row]['CURRENCY'] = $row_data[0];
+                        $info[$row]['BUY']      = $row_data[1];
+                        $info[$row]['SALE']     = $row_data[2];
+                        if($no > 5 && $no <= 10){
+                    ?>    
+                          <tr>
+                            <td style="text-align:center;"><?=$no?></td>
+                            <td><?=$info[$row]['CURRENCY']?></td>  
+                            <td style="color:blue;"><?=$info[$row]['BUY']?></td> 
+                            <td style="color:red;"><?= $info[$row]['SALE']?></td>
+                        </tr>
+                    <?php
+                          $no++;
+                        }
+                      }
+                      fclose($txt_file);
+                    ?>
+                </tbody>
+              </table>
             </div>
           </div>
-          <div class="row">
-            <div class="col-mb-12">
-                <div class="card mb-3">
-                  <div class="row g-0">
-                      <div class="col-md-6">
-                        <!-- <img src="assets/img/images.jpg" class="img-fluid rounded-start" alt="..."> -->
-                        <div class="card-body">
-                          <p>
-                            <strong><span style="font-size:20px;"><?=$company["companyname"]?></span></strong>
-                            <br>
-                            <?=$company["address"]?>
-                          </p>
-                        </div>                          
-                      </div>
-                      <div class="col-md-6">
-                        <div class="card-body">                          
-                          <p>
-                            <strong><span style="font-size:20px;">Jam Operasional :</span></strong>
-                            <br>
-                            Senin - Jum'at ( 8AM - 7PM) <br>
-                            Sabtu - Minggu ( 10AM - 7PM)
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>            
-                </div>
-            </div>            
-        </div><!-- End Left side columns -->
+        </div>
+      </div>  
+    </div>
 
-        <!-- Right side columns -->
-        <div class="col-lg-4">
-          <!-- Top Selling -->
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-body">       
-                <h5 class="card-title">
-                  <span style="text-align:right;font-weight:bold;font-name:arial-black;color:#000;">
-                    <?php
-                        function dayList(){
-                          $date = date('Y-m-d');
-                          $day = date('D', strtotime($date));
-                          $hari = array(
-                              'Sun' => 'Minggu',
-                              'Mon' => 'Senin',
-                              'Tue' => 'Selasa',
-                              'Wed' => 'Rabu',
-                              'Thu' => 'Kamis',
-                              'Fri' => 'Jumat',
-                              'Sat' => 'Sabtu'
-                          );
-                          return $hari[$day];
-                      }
-                      echo dayList(). ', ' . date('d F Y');
-                    ?>  
-                    - <span id="clock" style="font-weight:bold;font-name:arial-black;color:#d62d20;"><?php print date('H:i:s');?></span>
-                  </span>
-                </h5>         
-                <table id="main-table" class="table table-striped table-bordered" style="width:100%">
-                  <thead>
-                    <tr>                    
-                      <th style="text-align:center;">#</th>
-                      <th>Currency</th>
-                      <th>Buy</th>
-                      <th>Sale</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php		
-                        $txt_file = file_get_contents('file/currency.txt');
-                        $rows     = explode("\n", $txt_file);
-                        array_shift($rows);
-                        
-                        $no = 1;
-                        foreach($rows as $row => $data) {
-                          $row_data = explode('^', $data);                    
-                          $info[$row]['CURRENCY'] = $row_data[0];
-                          $info[$row]['BUY']      = $row_data[1];
-                          $info[$row]['SALE']     = $row_data[2];
-                          // if($no <= 10){
-                      ?>    
-                            <tr>
-                              <td style="text-align:center;"><?=$no?></td>
-                              <td><?=$info[$row]['CURRENCY']?></td>  
-                              <td style="color:blue;"><?=$info[$row]['BUY']?></td> 
-                              <td style="color:red;"><?= $info[$row]['SALE']?></td>
-                            </tr>                         
-                      <?php  
-                          // }
-                          $no++; 
-                        } 
-                        fclose($txt_file);
-                      ?>
-                  </tbody>
-                </table>                
+    <div class="row">
+      <div class="col-mb-12">
+          <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <p>
+                      <strong><span style="font-size:20px;"><?=$company["companyname"]?></span></strong>
+                      <br>
+                      <?=$company["address"]?>
+                    </p>
+                  </div>                          
+                </div>
+                <div class="col-md-4">
+                  <div class="card-body">                          
+                    <p>
+                      <strong><span style="font-size:20px;">Jam Operasional :</span></strong>
+                      <br>
+                      Senin - Jum'at ( 8AM - 7PM) <br>
+                      Sabtu - Minggu ( 10AM - 7PM)
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>            
-          </div><!-- End Top Selling -->          
-        </div><!-- End Right side columns -->
-
-      </div>
-    </section>
-
+          </div>
+      </div>            
+    </div>
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
-  <!-- <footer id="footer" class="footer">
-    <div class="copyright">
-      <strong><span style="font-size:20px;"><?=$company["companyname"]?></span></strong>
-    </div>
-    <div class="credits">
-      <span style="font-size:15px;">        
-        <?=$company["address"]?>
-      </span>      
-    </div>
-  </footer> -->
-  <!-- End Footer -->
+  <footer id="footer" class="footer fixed-bottom d-flex align-items-center">
+    <strong><span style="font-size:20px;"><?=$company["companyname"]?></span></strong>
+  </footer><!-- End Footer -->
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
@@ -265,21 +272,21 @@
     ?>
   </script>
 
-  <script type="text/javascript">    
+  <!-- <script type="text/javascript">    
     $(document).ready( function () {
       var table = $('#main-table').DataTable( {
         bLengthChange : false,
         bInfo : false,
-        pageLength : 10,
-        lengthMenu: [[10, -1], [10, 'Todos']]
+        pageLength : 5,
+        lengthMenu: [[5, -1], [5, 'Todos']]
       } )
     } );
-  </script>
+  </script> -->
 
   <script type="text/javascript">
-    $(document).bind("contextmenu",function(e) {
-      e.preventDefault();
-    });
+    //$(document).bind("contextmenu",function(e) {
+     // e.preventDefault();
+    //});
     
     $(document).keydown(function(e){
       if(e.which === 123){
