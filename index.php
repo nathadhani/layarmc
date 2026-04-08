@@ -1,58 +1,4 @@
-<?php
-	$sec = "300"; 
-	header("Refresh:$sec;");	
-	error_reporting("E_ALL ^ E_NOTICE");	
-	$company = array('companyname' => 'PT. PERMATA VALAS UTAMA', 
-                   'address' => 'Grand Itc Permata Hijau Lt. Dasar Blok C18 No.1 <br> Jl. Arteri Permata Hijau, Jakarta Selatan | (021) 5366 4614 / WA : 0822 4666 7301'
-                  );		
-?>
-<?php
-  $servername = "localhost";
-  $username = "root";
-  $password = "vunrtmry007";
-  $dbname = "dbepos";
-
-  // Create connection
-  $conn = mysqli_connect($servername, $username, $password, $dbname);
-
-  // Check connection
-  if (!$conn) {
-      die("Connection failed: " . mysqli_connect_error());
-  }
-  // echo "Connected successfully";
-
-  $today = DATE('Y-m-d');
-  $sql1 = "SELECT m_currency.currency_code,
-                1 AS denomination,
-                m_exchange_rate.exchange_rate_buy,
-                m_exchange_rate.exchange_rate_sell
-          FROM m_exchange_rate 
-          JOIN m_currency ON m_currency.id = m_exchange_rate.currency_id
-          WHERE m_exchange_rate.exchange_rate_date = '$today'
-          AND m_exchange_rate.store_id = 6          
-          GROUP BY m_currency.currency_code
-          HAVING m_exchange_rate.exchange_rate_buy > 0 AND m_exchange_rate.exchange_rate_sell > 0
-          ORDER BY m_currency.currency_code ASC
-          LIMIT 13";
-  $result1 = $conn->query($sql1); 
-
-  $sql2 = "SELECT m_currency.currency_code,
-                1 AS denomination,
-                m_exchange_rate.exchange_rate_buy,
-                m_exchange_rate.exchange_rate_sell
-          FROM m_exchange_rate 
-          JOIN m_currency ON m_currency.id = m_exchange_rate.currency_id
-          WHERE m_exchange_rate.exchange_rate_date = '$today'
-          AND m_exchange_rate.store_id = 6          
-          GROUP BY m_currency.currency_code
-          HAVING m_exchange_rate.exchange_rate_buy > 0 AND m_exchange_rate.exchange_rate_sell > 0
-          ORDER BY m_currency.currency_code ASC
-          LIMIT 13 OFFSET 13";
-  $result2 = $conn->query($sql2);
-
-  // Close connection manually (optional, script ends will auto-close)
-  mysqli_close($conn);
-?>
+<?php include 'data.php';?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -84,7 +30,7 @@
 
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
-    <strong><span style="text-align:left;font-size:22px;font-weight:bold;font-name:arial-black;color:#000"><?=$company["companyname"]?></span></strong>
+    <strong><span style="text-align:left;font-size:20px;font-weight:bold;font-name:arial-black;color:#000"><?=$company["companyname"]?></span></strong>
     <nav class="header-nav ms-auto">      
       <span style="text-align:right;font-size:22px;font-weight:bold;font-name:arial-black;color:#000;margin-right:25px;">
           <?php
@@ -113,114 +59,118 @@
   <main id="main" class="main">
     <!-- startrow -->
     <div class="row">
-
+      
       <!-- panelkurs -->
-      <div class="col-lg-3">
-        <!-- startkurs -->
-        <table id="table1" style="margin-top:-2px">
-            <thead>
-              <tr>
-                <th>Currency</th>
-                <th>We BUY</th>
-                <th>We SELL</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php                        
-                if ($result1->num_rows > 0) {         
-                  $no = 1;
-                  while($row = $result1->fetch_assoc()) {
-              ?>    
-                <tr>
-                  <td><?=$row['currency_code']?></td>
-                  <?php if (fmod($row['exchange_rate_buy'], 1) != 0)  { ?>
-                    <td><?=$row['exchange_rate_buy'] <> 0 ? number_format($row['exchange_rate_buy'],3) : '-' ?></td>
-                  <?php } else { ?>
-                    <td><?=$row['exchange_rate_buy'] <> 0 ? number_format($row['exchange_rate_buy'],0) : '-' ?></td>
-                  <?php } ?>
+        <?php if ($result1->num_rows > 0) { ?>
+          <div class="col-lg-3">
+            <!-- startkurs -->
+            <table id="table1" style="margin-top:-2px">
+                <thead>
+                  <tr style="text-align:center">
+                    <th>#</th>
+                    <th>Currency</th>
+                    <th>We BUY</th>
+                    <th>We SELL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                    $no = 1;
+                    while($row = $result1->fetch_assoc()) {
+                  ?>    
+                    <tr style="text-align:center">
+                      <td><?=$no?></td>
+                      <td><?=$row['currency_code']?></td>
+                      <?php if (fmod($row['exchange_rate_buy'], 1) != 0)  { ?>
+                        <td><?=$row['exchange_rate_buy'] <> 0 ? number_format($row['exchange_rate_buy'],3) : '-' ?></td>
+                      <?php } else { ?>
+                        <td><?=$row['exchange_rate_buy'] <> 0 ? number_format($row['exchange_rate_buy'],0) : '-' ?></td>
+                      <?php } ?>
 
-                  <?php if (fmod($row['exchange_rate_sell'], 1) != 0)  { ?>
-                    <td><?=$row['exchange_rate_sell'] <> 0 ? number_format($row['exchange_rate_sell'],3) : '-' ?></td>
-                  <?php } else { ?>
-                    <td><?=$row['exchange_rate_sell'] <> 0 ? number_format($row['exchange_rate_sell'],0) : '-' ?></td>
-                  <?php } ?>
-                </tr>
-              <?php
+                      <?php if (fmod($row['exchange_rate_sell'], 1) != 0)  { ?>
+                        <td><?=$row['exchange_rate_sell'] <> 0 ? number_format($row['exchange_rate_sell'],3) : '-' ?></td>
+                      <?php } else { ?>
+                        <td><?=$row['exchange_rate_sell'] <> 0 ? number_format($row['exchange_rate_sell'],0) : '-' ?></td>
+                      <?php } ?>
+                    </tr>
+                  <?php
                       $no++;     
-                  }
-                }
-              ?>
-            </tbody>
-          </table> 
-          <!-- endkurs -->
-      </div>
+                    }
+                  ?>
+                </tbody>
+              </table> 
+              <!-- endkurs -->
+          </div>
+        <?php } ?>
 
-      <div class="col-lg-3">
-        <!-- startkurs -->
-        <table id="table2" style="margin-top:-2px">
-            <thead>
-              <tr>
-                <th>Currency</th>
-                <th>We BUY</th>
-                <th>We SELL</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?php                        
-                if ($result2->num_rows > 0) {     
-                  $no = 1;
-                  while($row = $result2->fetch_assoc()) {
-              ?>    
-                <tr>
-                  <td><?=$row['currency_code']?></td>
-                  <?php if (fmod($row['exchange_rate_buy'], 1) != 0)  { ?>
-                    <td><?=$row['exchange_rate_buy'] <> 0 ? number_format($row['exchange_rate_buy'],3) : '-' ?></td>
-                  <?php } else { ?>
-                    <td><?=$row['exchange_rate_buy'] <> 0 ? number_format($row['exchange_rate_buy'],0) : '-' ?></td>
-                  <?php } ?>
+        <?php if ($result2->num_rows > 0) { ?>
+          <div class="col-lg-3">
+            <!-- startkurs -->
+            <table id="table2" style="margin-top:-2px">
+                <thead>
+                  <tr style="text-align:center">
+                    <th>#</th>
+                    <th>Currency</th>
+                    <th>We BUY</th>
+                    <th>We SELL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php     
+                    $no = $no;
+                    while($row = $result2->fetch_assoc()) {
+                  ?>    
+                    <tr style="text-align:center">
+                      <td><?=$no?></td>  
+                      <td><?=$row['currency_code']?></td>
+                      <?php if (fmod($row['exchange_rate_buy'], 1) != 0)  { ?>
+                        <td><?=$row['exchange_rate_buy'] <> 0 ? number_format($row['exchange_rate_buy'],3) : '-' ?></td>
+                      <?php } else { ?>
+                        <td><?=$row['exchange_rate_buy'] <> 0 ? number_format($row['exchange_rate_buy'],0) : '-' ?></td>
+                      <?php } ?>
 
-                  <?php if (fmod($row['exchange_rate_sell'], 1) != 0)  { ?>
-                    <td><?=$row['exchange_rate_sell'] <> 0 ? number_format($row['exchange_rate_sell'],3) : '-' ?></td>
-                  <?php } else { ?>
-                    <td><?=$row['exchange_rate_sell'] <> 0 ? number_format($row['exchange_rate_sell'],0) : '-' ?></td>
-                  <?php } ?>
-                </tr>
-              <?php
-                      $no++;    
-                  }
-                }
-              ?>
-            </tbody>
-          </table> 
-          <!-- endkurs -->
-      </div>
+                      <?php if (fmod($row['exchange_rate_sell'], 1) != 0)  { ?>
+                        <td><?=$row['exchange_rate_sell'] <> 0 ? number_format($row['exchange_rate_sell'],3) : '-' ?></td>
+                      <?php } else { ?>
+                        <td><?=$row['exchange_rate_sell'] <> 0 ? number_format($row['exchange_rate_sell'],0) : '-' ?></td>
+                      <?php } ?>
+                    </tr>
+                  <?php
+                      $no++;
+                    }
+                  ?>
+                </tbody>
+              </table> 
+              <!-- endkurs -->
+          </div>
+        <?php } ?>
       <!-- endpanelkurs -->
 
       <!-- panelvideo -->
-      <div class="col-lg-6">
-        <!-- startcardvideo -->
-         <div class="row">
-          <video controls id="myVideo" autoplay muted loop>
-            <source src="video.mp4" type="video/mp4"/>
-          </video>
-        </div>
-        <!-- endcardvideo -->
-        <div class="row">
-            <!-- <div class="col-mb-12"> -->
-              <!-- <div class="card mb-12"> -->
-                <div class="card">
-                  	<p>
-                      <strong><span style="font-size:20px;">Jam Operasional :</span></strong>
+        <div class="col-lg-6">
+          <!-- startcardvideo -->
+          <div class="row">
+            <video controls id="myVideo" autoplay muted loop>
+              <source src="video.mp4" type="video/mp4"/>
+            </video>
+          </div>
+          <!-- endcardvideo -->
+          <div class="row">
+              <!-- <div class="col-mb-12"> -->
+                <!-- <div class="card mb-12"> -->
+                  <div class="card">
+                    <p>
+                      <strong><span style="font-size:16px;">Jam Operasional :</span></strong>
                       <br>
                       Senin - Jum'at ( 8AM - 7PM ) <br>
                       Sabtu - Minggu ( 10AM - 7PM ) <br>                      
                       <?=$company["address"]?>
                     </p>
-                </div>
-              <!-- </div>
-            </div> -->
+                  </div>
+                <!-- </div>
+              </div> -->
+          </div>
         </div>
-      </div>
       <!-- endpanelvideo -->       
        
     </div>
